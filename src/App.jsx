@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './App.css'
 
 function App() {
   
   const hizbOptions = Array.from({length: 60}, (_, i) => i + 1);
-  
+  const recognitionRef = useRef(null);
+
   // const [count, setCount] = useState(0)
   const [fromHizb, setFromHizb] = useState('');
   const [toHizb, setToHizb] = useState('');
@@ -18,6 +19,92 @@ function App() {
   // user voice recording state
   const [userTranscript, setUserTranscript] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+
+
+  // let recognition = null;
+
+  // if (SpeechRecognition) {
+  //   recognition = new SpeechRecognition();
+  //   recognition.continuous = true;
+  //   recognition.lang = 'ar-SA';
+  //   recognition.interimResults = false;
+  // }
+
+  const cleanArabicText = (text) => {
+    if (!text) return "";
+    return text
+      .replace(/[\u064B-\u065F]/g, "")
+      .replace(/[أإآ]/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ۖ /g, "")
+      .replace(/ۗ /g, "")
+      .replace(/ۚ /g, "")
+      .trim();
+  };
+
+  const startSpeechRecognition = () => {
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.error("Speech Recognition window API is not supported in this browser.");
+      alert('معذراً، ميزة التعرف على الصوت غير مدعومة في هذا المتصفح.');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = 'ar-SA';
+    recognition.interimResults = false;
+    // on start
+    recognition.onstart = () => {
+      console.log("Speech Recognition started.");
+      setUserTranscript("");
+      setIsCorrect(null);
+      setIsRecording(true);
+    }
+    // on result
+    recognition.onresult = (event) => {
+      const transcriptResultIndex = event.resultIndex;
+      const transcriptResult = event.results[transcriptResultIndex][0].transcript.trim();
+      
+      const cleanUserTranscript = cleanArabicText(transcriptResult);
+      const cleanOriginalTranscript = cleanArabicText(currentAyah.text);
+
+      console.log("Cleaned User Transcript:", cleanUserTranscript);
+      console.log("Cleaned Original Transcript:", cleanOriginalTranscript);
+
+      const oText = cleanOriginalTranscript.replace(/\s+/g, '');
+      const uText = cleanUserTranscript.replace(/\s+/g, '');
+      if (oText.includes(uText) || uText.includes(oText)) {
+        setIsCorrect(true);
+      } else {
+        setIsCorrect(false);
+      }
+    };
+    // on error
+    recognition.onerror = (event) => {
+      console.error("recognition Error: ", event.error);
+      setIsRecording(false);
+    }
+    // on end
+    recognition.onend = () => {
+      console.log("Speech Recognition ended.");
+      setIsRecording(false);
+    }
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    
+    console.log("Speech Recognition window API is supported in this browser.");
+  };
+
+  const stopSpeechRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+  };
 
   const fetchRandomAyah = async () => {
     setLoding(true);
@@ -46,7 +133,7 @@ function App() {
         numberInSurah: selected.numberInSurah,
         surahName: selected.surah.name,
       });
-      // console.log('selected Ayah text is: ', selected.text);
+      console.log('selected Ayah text is: ', selected.text);
       // console.log('selected Ayah number is: ', selected.numberInSurah);
       // console.log('selected Surah Name is: ', selected.surah.name);
 
@@ -124,13 +211,38 @@ function App() {
           )}
         </div>
 
-      {/* 3. زر البدء بالتسجيل */}
-        <div style={{border: '2px solid #ccc', borderRadius: '17px', padding: '5px', fontSize: '10px', height: '40px', marginTop: '16px', width: '60px', textAlign: 'center', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#866084', color: '#fff'}}>
-          <span>
-            <span></span>
-            <span></span>
+      {/* 3. زر بالتسجيل */}
+        <div 
+          onClick={isRecording ? stopSpeechRecognition : startSpeechRecognition}
+          style={{ 
+            padding: '15px 25px',
+            borderRadius: '20px',
+            border: '1px solid #4b5563',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            
+            backgroundColor: isRecording ? '#ef4444' : '#374151', 
+            color: '#ffffff',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {/* white dot */}
+          <span style={{ 
+            display: 'inline-block', 
+            width: '10px', 
+            height: '10px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white',
+            opacity: isRecording ? 1 : 0.5
+          }}></span>
+
+          {/* 4. تغيير النص ديناميكياً بناءً على الحالة */}
+          <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
+            {isRecording ? "إيقاف التسجيل ورؤية النتيجة" : "ابدأ التسجيل الصوتي"}
           </span>
-          <span>ابدأ التسجيل الصوتي</span>
         </div>
       </div>
 
@@ -159,6 +271,24 @@ function App() {
           <span>✅</span>
         </button>
       </div>
+      {userTranscript && (
+        <div style={{ marginTop: '15px', textAlign: 'center' }}>
+          <p style={{ fontSize: '14px', color: '#a1a1aa' }}>ما نطقتِه:</p>
+          <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#f3f4f6' }}>"{userTranscript}"</p>
+          
+          {/* إظهار النتيجة للمستخدم بصرياً */}
+          {isCorrect === true && (
+            <p style={{ color: '#10b981', fontWeight: 'bold', marginTop: '10px' }}>
+              ✅ أحسنتِ! قراءتكِ صحيحة ومطابقة.
+            </p>
+          )}
+          {isCorrect === false && (
+            <p style={{ color: '#ef4444', fontWeight: 'bold', marginTop: '10px' }}>
+              ❌ هناك اختلاف، حاولي المقارنة مع الآية الأصلية.
+            </p>
+          )}
+        </div>
+      )}
     </div>)}
   </div>
   )

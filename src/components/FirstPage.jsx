@@ -83,7 +83,7 @@ export default function FirstPage({
 }) {
 	const [hovering, setHovering] = useState(false)
 	return (
-	<div style={{ textAlign: 'center', marginBottom: 36 }}>
+	<div style={{ textAlign: 'center', marginBottom: 10 }}>
 		<div style={{
 			display: 'inline-flex',
 			alignItems: 'center',

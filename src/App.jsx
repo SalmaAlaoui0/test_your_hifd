@@ -112,6 +112,24 @@ function App() {
 				overflow: 'hidden',
 			}}
 		>
+			{isExamStarted && (
+				<div style={{
+					position: 'absolute',
+					top: 0, left: 0, right: 0,
+					height: 3,
+					direction: 'rtl',
+					background: 'rgba(200,150,62,0.15)',
+				}}>
+					<div style={{
+					width: `${(currentQuestionIndex * 100)/(questionsCount)}%`,
+					height: '100%',
+					background: 'linear-gradient(90deg, var(--gold), var(--gold-light))',
+					borderRadius: '0 2px 2px 0',
+					transition: 'width 0.5s ease',
+					}} />
+				</div>
+			)}
+		
 			{/* Background stars */}
 			<div style={{ position: 'absolute', top: 40, right: 60 }}>
 				<IslamicStar size={80} opacity={0.08} />
@@ -123,7 +141,14 @@ function App() {
 				<IslamicStar size={50} opacity={0.05} />
 			</div>
 
-			<div style={{
+			
+
+
+				{/* Gold top line */}
+				
+				<div>
+				{ !isExamStarted? (
+						<div style={{
 						width: '100%',
 						maxWidth: 520,
 						background: 'var(--card-bg)',
@@ -136,35 +161,31 @@ function App() {
 						margin: '0 auto',
 						backdropFilter: 'blur(12px)',
 					}}>
-
-				<div style={{ position: 'absolute', top: -1, right: -1 }}>
-					<GeoCorner />
-				</div>
-				<div style={{ position: 'absolute', top: -1, left: -1 }}>
-					<GeoCorner flip />
-				</div>
-
-				{/* Gold top line */}
-				<div style={{
-					position: 'absolute',
-					top: 0, left: '15%', right: '15%',
-					height: 2,
-					background: 'linear-gradient(90deg, transparent, #C8963E, transparent)',
-					borderRadius: 1,
-				}} />
-				<div>
-				{ !isExamStarted? (
-					<FirstPage
-						fromHizb={fromHizb}
-						setFromHizb={setFromHizb}
-						toHizb={toHizb}
-						setToHizb={setToHizb}
-						count={questionsCount}
-						setCount={setQuestionsCount}
-						isExamStarted={isExamStarted}
-						setIsExamStarted={setIsExamStarted}
-						fetchRandomAyah={handleFetchRandomAyah}
-					/>
+						<div style={{ position: 'absolute', top: -1, right: -1 }}>
+							<GeoCorner />
+						</div>
+						<div style={{ position: 'absolute', top: -1, left: -1 }}>
+							<GeoCorner flip />
+						</div>
+						<div style={{
+							position: 'absolute',
+							top: 0, left: '15%', right: '15%',
+							height: 2,
+							background: 'linear-gradient(90deg, transparent, #C8963E, transparent)',
+							borderRadius: 1,
+						}} />
+						<FirstPage
+							fromHizb={fromHizb}
+							setFromHizb={setFromHizb}
+							toHizb={toHizb}
+							setToHizb={setToHizb}
+							count={questionsCount}
+							setCount={setQuestionsCount}
+							isExamStarted={isExamStarted}
+							setIsExamStarted={setIsExamStarted}
+							fetchRandomAyah={handleFetchRandomAyah}
+						/>
+						</div>
 				)
 				: ExamFinished ? (
 					<div style={{ textAlign: 'center', padding: '40px', direction: 'rtl' }}>
@@ -230,7 +251,6 @@ function App() {
 					/>
 				)}
 			</div>
-		</div>
 	</div>
 	)
 }

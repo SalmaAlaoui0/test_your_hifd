@@ -1,4 +1,5 @@
 import { react } from 'react';
+import { GeoCorner } from '../utils/Icons.jsx';
 
 export default function SecondPage({
     currentAyah,
@@ -34,9 +35,22 @@ export default function SecondPage({
 	setShowRecordingButton
 }) {
     return (
-	<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-		<div style={{ display: 'flex', flexDirection: 'row', gap: '30px', marginBottom: '120px' }}>
-			<div style={{border: '2px solid #ccc', borderRadius: '7px', padding: '15px', width: '300px', textAlign: 'center'}}>
+	<div style={{ width: '100%', maxWidth: 680, display: 'flex', flexDirection: 'column', gap: '20px'}}>
+		<div style={{ display: 'grid', direction: 'rtl', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: 16, alignItems: 'stretch' }}>
+			<div
+				style={{
+				background: 'var(--card-bg)',
+				border: '1px solid var(--card-border)',
+				borderRadius: 16,
+				padding: '28px 32px',
+				boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+				position: 'relative',
+				backdropFilter: 'blur(10px)',
+				}}
+			>
+				<div style={{ position: 'absolute', top: -1, right: -1 }}>
+					<GeoCorner />
+				</div>
 				{Loding ? (
 					<p>جاري جلب الآية...</p>
 				): currentAyah ? (
@@ -91,19 +105,7 @@ export default function SecondPage({
 
 		{/* 4. الأزرار الأربعة للتفاعل */}
 		{!isRecording && isCorrect === null && !hasRecorded && !showAnswerBox && !tafsirBox && (
-		<div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-			<button
-			style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}
-			onClick = {() => {
-				setShowRecordingButton(false);
-				setShowAnswerBox(true);
-				setOption('first');
-			}}
-			>
-			<span>لا أعلم</span>
-			<span>🔄</span>
-			</button>
-			
+		<div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>			
 			<button
 			style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}
 			onClick={() => {

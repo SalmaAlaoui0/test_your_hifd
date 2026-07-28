@@ -3,11 +3,14 @@ import { react } from 'react';
 export default function SecondPage({
     currentAyah,
 	Loding,
+	option,
+	setOption,
 	isRecording,
 	incrementRetryCounter,
 	startSpeechRecognition,
 	stopSpeechRecognition,
 	isCorrect,
+	setIsCorrect,
 	hasRecorded,
 	showAnswerBox,
 	setShowAnswerBox,
@@ -20,7 +23,15 @@ export default function SecondPage({
 	loadingTafsir,
 	userTranscript,
 	tafsirText,
-	retryCounter
+	retryCounter,
+	score,
+	setScore,
+	currentQuestionIndex,
+	setCurrentQuestionIndex,
+	questionsCount,
+	setExamFinished,
+	showRecordingButton,
+	setShowRecordingButton
 }) {
     return (
 	<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -42,39 +53,40 @@ export default function SecondPage({
 				)}
 			</div>
 
-			{/* 3. زر بالتسجيل */}
+			{showRecordingButton && (
 			<div 
-			onClick={() => {incrementRetryCounter(); isRecording ? stopSpeechRecognition() : startSpeechRecognition();}}
-			style={{ 
-				padding: '15px 25px',
-				borderRadius: '20px',
-				border: '1px solid #4b5563',
-				cursor: 'pointer',
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				gap: '10px',
-				
-				backgroundColor: isRecording ? '#ef4444' : '#374151', 
-				color: '#ffffff',
-				transition: 'all 0.3s ease'
-			}}
+				onClick={() => {incrementRetryCounter(); isRecording ? stopSpeechRecognition() : startSpeechRecognition();}}
+				style={{ 
+					padding: '15px 25px',
+					borderRadius: '20px',
+					border: '1px solid #4b5563',
+					cursor: 'pointer',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					gap: '10px',
+					
+					backgroundColor: isRecording ? '#ef4444' : '#374151', 
+					color: '#ffffff',
+					transition: 'all 0.3s ease'
+				}}
 			>
 			{/* white dot */}
-			<span style={{ 
-				display: 'inline-block', 
-				width: '10px', 
-				height: '10px', 
-				borderRadius: '50%', 
-				backgroundColor: 'white',
-				opacity: isRecording ? 1 : 0.5
-			}}></span>
+				<span style={{ 
+					display: 'inline-block', 
+					width: '10px', 
+					height: '10px', 
+					borderRadius: '50%', 
+					backgroundColor: 'white',
+					opacity: isRecording ? 1 : 0.5
+				}}></span>
 
-			{/* 4. تغيير النص ديناميكياً بناءً على الحالة */}
-			<span style={{ fontWeight: 'bold', fontSize: '14px' }}>
-				{isRecording ? "إيقاف التسجيل ورؤية النتيجة" : "ابدأ التسجيل الصوتي"}
-			</span>
+				{/* 4. تغيير النص ديناميكياً بناءً على الحالة */}
+				<span style={{ fontWeight: 'bold', fontSize: '14px' }}>
+					{isRecording ? "إيقاف التسجيل ورؤية النتيجة" : "ابدأ التسجيل الصوتي"}
+				</span>
 			</div>
+			)}
 		</div>
 
 		{/* 4. الأزرار الأربعة للتفاعل */}
@@ -83,7 +95,9 @@ export default function SecondPage({
 			<button
 			style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}
 			onClick = {() => {
+				setShowRecordingButton(false);
 				setShowAnswerBox(true);
+				setOption('first');
 			}}
 			>
 			<span>لا أعلم</span>
@@ -92,13 +106,23 @@ export default function SecondPage({
 			
 			<button
 			style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}
-			onClick={fetchTafsir}
+			onClick={() => {
+				setShowRecordingButton(false);
+				fetchTafsir();
+			}}
 			>
 			<span>مساعدة</span>
 			<span>❓</span>
 			</button>
 
-			<button style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}>
+			<button
+				style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}
+				onClick = {() => {
+					setShowRecordingButton(false);
+					setShowAnswerBox(true);
+					setOption('second');
+				}}
+			>
 			<span>إظهار الجواب </span>
 			<span>✅</span>
 			</button>
@@ -106,6 +130,8 @@ export default function SecondPage({
 			<button
 			style={{height: '36px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer'}}
 			onClick={() => {
+				setCurrentQuestionIndex(0);
+				setScore(0);
 				setIsExamStarted(false);
 				}}
 			>
@@ -140,7 +166,7 @@ export default function SecondPage({
 			</div>
 			{/* زر الرجوع للواجهة السابقة لمواصلة التسميع */}
 			<button 
-			onClick={() => setTafsirBox(false)} // إغلاق صندوق التفسير وإعادة الأزرار الثلاثة
+			onClick={() => { setShowRecordingButton(true); setTafsirBox(false); }} // إغلاق صندوق التفسير وإعادة الأزرار الثلاثة
 			style={{ 
 				height: '36px', 
 				borderRadius: '7px', 
@@ -173,23 +199,86 @@ export default function SecondPage({
 					" {currentAyah.text} "
 				</p>
 			</div>
-			{/* زر الانتقال للسؤال التالي */}
-			<button 
-			onClick={fetchRandomAyah} 
-			style={{ 
-				height: '40px', 
-				borderRadius: '7px', 
-				fontSize: '16px', 
-				cursor: 'pointer', 
-				padding: '0 20px', 
-				backgroundColor: '#10b981', 
-				color: '#fff', 
-				border: 'none', 
-				fontWeight: 'bold' 
-			}}
-			>
-			السؤال التالي ➡️
-			</button>
+			{option === 'first' ? (
+				// زر الانتقال للسؤال التالي
+				<button 
+					onClick = {() => {
+						setShowRecordingButton(true);
+                        if (isCorrect) {
+                            setScore(score + 1);
+                        }
+                        if (currentQuestionIndex >= Number(questionsCount)) {
+                            setExamFinished(true);
+                        } else {
+                            fetchRandomAyah();
+                        }
+                    }}
+					style={{ 
+						height: '40px', 
+						borderRadius: '7px', 
+						fontSize: '16px', 
+						cursor: 'pointer', 
+						padding: '0 20px', 
+						backgroundColor: '#10b981', 
+						color: '#fff', 
+						border: 'none', 
+						fontWeight: 'bold' 
+				}}
+				>
+					السؤال التالي ➡️
+				</button>
+			) : (
+				<div
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						gap: '20px',
+						marginTop: '30px'
+					}}
+				>
+					<h3>جوابك</h3>
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'row-reverse',
+							justifyContent: 'center',
+							height: '40px',
+							alignItems: 'center',
+							gap: '50px',
+						}}
+					>
+						<button
+							onClick = {() => {
+								setShowRecordingButton(true);
+								setScore(score + 1);
+								console.log('score is: ', score);
+								if (currentQuestionIndex >= Number(questionsCount)) {
+									setExamFinished(true);
+								} else {
+									fetchRandomAyah();
+								}
+							}}
+							style={{fontSize: '20px', backgroundColor: '#10b981', color: '#fff'}}
+						>
+							صحيح
+						</button>
+						<button 
+							onClick={() => {
+								setShowRecordingButton(true);
+								if (currentQuestionIndex >= Number(questionsCount)) {
+									setExamFinished(true);
+								} else {
+									fetchRandomAyah();
+								}
+							}}
+							style={{fontSize: '20px', backgroundColor: '#ef4444', color: '#fff'}}
+						>
+							خطأ
+						</button>
+					</div>
+				</div>
+			)}
 		</div>
 		)}
 
@@ -208,7 +297,16 @@ export default function SecondPage({
 				</button>
 				{retryCounter >= 4 && (
 					<button
-					onClick={fetchRandomAyah}
+					onClick={() => {
+						if (isCorrect) {
+                            setScore(score + 1);
+                        }
+                        if (currentQuestionIndex >= Number(questionsCount)) {
+                            setExamFinished(true);
+                        } else {
+                            fetchRandomAyah();
+                        }
+					}}
 					style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#10b981', color: '#fff', border: 'none', fontWeight: 'bold' }}
 					> 
 					السؤال التالي ➡️
@@ -225,8 +323,18 @@ export default function SecondPage({
 			✅ جواب صحيح! أحسنتِ
 			</p>
 			<button 
-			onClick={fetchRandomAyah} // جلب آية عشوائية جديدة
-			style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#10b981', color: '#fff', border: 'none', fontWeight: 'bold' }}
+				onClick={() => {
+					setShowRecordingButton(true);
+					if (isCorrect) {
+						setScore(score + 1);
+					}
+					if (currentQuestionIndex >= Number(questionsCount)) {
+						setExamFinished(true);
+					} else {
+						fetchRandomAyah();
+					}
+				}}
+				style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#10b981', color: '#fff', border: 'none', fontWeight: 'bold' }}
 			>
 			السؤال التالي ➡️
 			</button>
@@ -240,7 +348,17 @@ export default function SecondPage({
 			❌ جواب خاطئ، حاولي مراجعة الآية
 			</p>
 			<button 
-			onClick={fetchRandomAyah} // جلب آية عشوائية جديدة للمحاولة في سؤال آخر
+			onClick={() => {
+				setShowRecordingButton(true);
+				if (isCorrect) {
+					setScore(score + 1);
+				}
+				if (currentQuestionIndex >= Number(questionsCount)) {
+					setExamFinished(true);
+				} else {
+					fetchRandomAyah();
+				}
+			}}
 			style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#ef4444', color: '#fff', border: 'none', fontWeight: 'bold' }}
 			>
 			السؤال التالي ➡️

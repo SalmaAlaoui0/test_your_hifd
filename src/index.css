@@ -1,10 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
   --border: #e5e4e7;
+  --card-bg: rgba(10, 36, 22, 0.92);
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
+  --gold: #C8963E;
+  --gold-light: #E8C87A;
+  --gold-dim: rgba(200, 150, 62, 0.15);
+  --cream: #F5E6C8;
+  --cream-dim: rgba(245, 230, 200, 0.6);
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
@@ -52,14 +60,12 @@
 
 body {
   margin: 0;
+  font-family: 'Noto Naskh Arabic', 'Amiri', serif;
 }
 
 #root {
-  width: 1050px;
-  max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -72,6 +78,30 @@ h2 {
   font-weight: 500;
   color: var(--text-h);
 }
+
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out both;
+}
+
+.float-anim {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a1f12;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8963e;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
 h1 {
   font-size: 56px;
@@ -93,6 +123,18 @@ h2 {
 }
 p {
   margin: 0;
+}
+
+.geo-pattern {
+  background-color: var(--bg-deep);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(180, 140, 50, 0.04) 0%, transparent 70%),
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(180, 140, 50, 0.03) 0deg 15deg,
+      transparent 15deg 30deg
+    );
+  background-size: 100% 100%, 80px 80px;
 }
 
 code,

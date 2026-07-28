@@ -1,4 +1,6 @@
 export const fetchRandomAyah = async ({
+	setCurrentQuestionIndex,
+	currentQuestionIndex,
 	setRetryCounter,
 	setUserTranscript,
 	setIsCorrect,
@@ -16,6 +18,7 @@ export const fetchRandomAyah = async ({
 	setHasRecorded(false);
 	setShowAnswerBox(false);
 	try {
+		setCurrentQuestionIndex(currentQuestionIndex + 1);
 		const minHizb = parseInt(fromHizb);
 		const maxHizb = parseInt(toHizb);
 		const randomHizb = Math.floor(Math.random() * (maxHizb - minHizb + 1)) + minHizb;

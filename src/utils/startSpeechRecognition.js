@@ -7,7 +7,8 @@ export const startSpeechRecognition = ({
 	setIsCorrect,
 	setIsRecording,
 	setFinishRecording,
-	currentAyah
+	currentAyah,
+	setShowRecordingButton
 }) => {
 	setHasRecorded(true);
 
@@ -36,7 +37,9 @@ export const startSpeechRecognition = ({
 	recognition.onresult = (event) => {
 		const transcriptResultIndex = event.resultIndex;
 		const transcriptResult = event.results[transcriptResultIndex][0].transcript.trim();
+		setShowRecordingButton(false);
 		setUserTranscript(transcriptResult);
+
 
 		const cleanUserTranscript = cleanArabicText(transcriptResult);
 		const cleanOriginalTranscript = cleanArabicText(currentAyah.text);

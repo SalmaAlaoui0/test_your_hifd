@@ -285,11 +285,6 @@ export default function SecondPage({
 							lineHeight: 1.8,
 							textAlign: 'center',
 						}}>
-						{/* backgroundColor: '#1e293b', 
-				border: '1px solid #10b981', 
-				padding: '20px', 
-				borderRadius: '12px', 
-				marginBottom: '15px'  */}
 						<p style={{ color: '#10b981', fontSize: '14px', marginBottom: '8px' }}>: الجواب الكامل للآية</p>
 						<p style={{ fontSize: '18px', direction: 'rtl', lineHeight: '1.6' }}>
 							" {currentAyah.text} "
@@ -358,31 +353,12 @@ export default function SecondPage({
 							>
 								خطأ
 							</button>
-							{/* <CounterBtn onClick = {() => {
-								setShowRecordingButton(true);
-								setScore(score + 1);
-								console.log('score is: ', score);
-								if (currentQuestionIndex >= Number(questionsCount)) {
-									setExamFinished(true);
-								} else {
-									fetchRandomAyah();
-								}
-							}} label="صح" />
-						<CounterBtn onClick={() => {
-								setShowRecordingButton(true);
-								if (currentQuestionIndex >= Number(questionsCount)) {
-									setExamFinished(true);
-								} else {
-									fetchRandomAyah();
-								}
-							}} label="خطأ" /> */}
 						</div>
 					</div>
 				</div>
 			)}
 
 			{!isRecording && (
-				// <div style={{ marginTop: '20px', textAlign: 'center', width: '100%' }}>
 				<div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 					{/* 1. حالة: لم يسجل شيئاً (الضغط على الإيقاف دون التحدث) */}
 					
@@ -402,36 +378,6 @@ export default function SecondPage({
 							questionsCount={questionsCount}
 							setShowRecordingButton={setShowRecordingButton}
 						/>
-
-
-						// <div>
-						// 	<p style={{ color: '#a1a1aa', marginBottom: '10px' }}>.لم يتم التقاط أي صوت، حاولي مرة أخرى</p>
-						// 	<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '17px', alignItems: 'center' }}>
-						// 		<button
-						// 			onClick={() => { startSpeechRecognition(); incrementRetryCounter(); }} // تشغيل التسجيل مجدداً فوراً وزيادة العداد
-						// 			style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 15px', backgroundColor: '#3b82f6', color: '#fff', border: 'none' }}
-						// 		>
-						// 			🔄 إعادة المحاولة
-						// 		</button>
-						// 		{retryCounter >= 4 && (
-						// 			<button
-						// 				onClick={() => {
-						// 					if (isCorrect) {
-						// 						setScore(score + 1);
-						// 					}
-						// 					if (currentQuestionIndex >= Number(questionsCount)) {
-						// 						setExamFinished(true);
-						// 					} else {
-						// 						fetchRandomAyah();
-						// 					}
-						// 				}}
-						// 				style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#10b981', color: '#fff', border: 'none', fontWeight: 'bold' }}
-						// 			>
-						// 				السؤال التالي ➡️
-						// 			</button>
-						// 		)}
-						// 	</div>
-						// </div>
 					)}
 
 					{/* 2. حالة: جواب صحيح */}
@@ -451,54 +397,6 @@ export default function SecondPage({
 							questionsCount={questionsCount}
 							setShowRecordingButton={setShowRecordingButton}
 						/>
-						// 	<div style={{
-						//     display: 'flex',
-						//     alignItems: 'center',
-						//     justifyContent: 'flex-end',
-						//     gap: 10,
-						//     direction: 'rtl',
-						//     padding: '4px 0',
-						//   }}>
-						//         <span style={{
-						//           fontFamily: 'Amiri, serif',
-						//           fontSize: 20,
-						//           fontWeight: 700,
-						//           color: '#34D399',
-						//         }}>
-						//           جواب صحيح! أحسنت
-						//         </span>
-						//         <span style={{
-						//           display: 'flex',
-						//           alignItems: 'center',
-						//           justifyContent: 'center',
-						//           width: 28,
-						//           height: 28,
-						//           borderRadius: 6,
-						//           background: 'rgba(52,211,153,0.15)',
-						//           border: '1.5px solid rgba(52,211,153,0.5)',
-						//           color: '#34D399',
-						//         }}>
-						//           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-						//             <polyline points="20 6 9 17 4 12" />
-						//           </svg>
-						//         </span>
-						// 		<button 
-						// 			onClick={() => {
-						// 				setShowRecordingButton(true);
-						// 				if (isCorrect) {
-						// 					setScore(score + 1);
-						// 				}
-						// 				if (currentQuestionIndex >= Number(questionsCount)) {
-						// 					setExamFinished(true);
-						// 				} else {
-						// 					fetchRandomAyah();
-						// 				}
-						// 			}}
-						// 			style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#10b981', color: '#fff', border: 'none', fontWeight: 'bold' }}
-						// 		>
-						// 		السؤال التالي ➡️
-						// 		</button>
-						// 	</div>
 					)}
 
 					{/* 3. حالة: جواب خاطئ */}
@@ -518,30 +416,7 @@ export default function SecondPage({
 							questionsCount={questionsCount}
 							setShowRecordingButton={setShowRecordingButton}
 						/>
-
-						// <div>
-						// 	<p style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '18px', marginBottom: '10px' }}>
-						// 	❌ جواب خاطئ، حاولي مراجعة الآية
-						// 	</p>
-						// 	<button 
-						// 	onClick={() => {
-						// 		setShowRecordingButton(true);
-						// 		if (isCorrect) {
-						// 			setScore(score + 1);
-						// 		}
-						// 		if (currentQuestionIndex >= Number(questionsCount)) {
-						// 			setExamFinished(true);
-						// 		} else {
-						// 			fetchRandomAyah();
-						// 		}
-						// 	}}
-						// 	style={{ height: '40px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', padding: '0 20px', backgroundColor: '#ef4444', color: '#fff', border: 'none', fontWeight: 'bold' }}
-						// 	>
-						// 	السؤال التالي ➡️
-						// 	</button>
-						// </div>
 					)}
-
 				</div>
 			)}
 		</div>

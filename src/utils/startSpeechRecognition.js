@@ -63,12 +63,15 @@ export const startSpeechRecognition = ({
 		});
 		// calculate match percentage to determine if the user passed or failed
 		const matchPercentage = (correctWordsCount / originalWords.length) * 100;
-		const threshold = originalWords.length <= 30 ? 30 : 60;
+		console.log(`Match Percentage: ${matchPercentage.toFixed(2)}%`);
+		const threshold = originalWords.length <= 30 ? 10 : 10;
 		if (matchPercentage >= threshold) {
 			setIsCorrect(true);
+			// setFeedback('correct');
 			console.log('You Passed! 🔥');
 		} else {
 			setIsCorrect(false);
+			// setFeedback('wrong');
 			console.log('You Failed! 😢');
 		}
     };

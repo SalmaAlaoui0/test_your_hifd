@@ -1,13 +1,17 @@
 import { useState, useRef } from 'react'
 import { startSpeechRecognition } from './utils/startSpeechRecognition';
-import {fetchRandomAyah } from './utils/fetchRandomAyah';
+import { fetchRandomAyah } from './utils/fetchRandomAyah';
 import FirstPage from './components/FirstPage';
 import SecondPage from './components/SecondPage';
+import ResultPage from './components/ResultPage';
 import { IslamicStar } from './utils/Icons.jsx';
 import { GeoCorner } from './utils/Icons.jsx';
+import { ExitButton } from './utils/Button.jsx';
+import { XIcon } from './utils/Icons.jsx';
 import './App.css'
 
 function App() {
+
 	const recognitionRef = useRef(null);
 
 	// const [count, setCount] = useState(0)
@@ -22,7 +26,6 @@ function App() {
 	const [loadingTafsir, setLoadingTafsir] = useState(false);
 	const [tafsirBox, setTafsirBox] = useState(false);
 	const [tafsirText, setTafsirText] = useState("");
-	const [option, setOption] = useState('');
 	const [showRecordingButton, setShowRecordingButton] = useState(true);
 
 	// the question count and result states
@@ -85,10 +88,10 @@ function App() {
 
 	const fetchTafsir = async () => {
 		if (!currentAyah) return;
-	
+
 		setLoadingTafsir(true);
 		setTafsirBox(true);
-		try{
+		try {
 			const response = await fetch(`http://api.quran-tafseer.com/tafseer/1/${currentAyah.surahNumber}/${currentAyah.numberInSurah}/`)
 			const data = await response.json();
 			setTafsirText(data.text);
@@ -96,6 +99,28 @@ function App() {
 			console.error('Error fetching tafsir:', error);
 		}
 		setLoadingTafsir(false);
+	};
+
+	const resetExamState = () => {
+		if (recognitionRef.current) {
+			recognitionRef.current.stop();
+		}
+		setCurrentQuestionIndex(0);
+		setScore(0);
+		setExamFinished(false);
+		setIsExamStarted(false);
+		setShowAnswerBox(false);
+		setTafsirBox(false);
+		setLoadingTafsir(false);
+		setTafsirText('');
+		setShowRecordingButton(true);
+		setCurrentAyah(null);
+		setUserTranscript('');
+		setIsCorrect(null);
+		setIsRecording(false);
+		setHasRecorded(false);
+		setFinishRecording(false);
+		setRetryCounter(0);
 	};
 
 
@@ -112,7 +137,7 @@ function App() {
 				overflow: 'hidden',
 			}}
 		>
-			{isExamStarted && (
+			{isExamStarted && !ExamFinished && (
 				<div style={{
 					position: 'absolute',
 					top: 0, left: 0, right: 0,
@@ -121,15 +146,53 @@ function App() {
 					background: 'rgba(200,150,62,0.15)',
 				}}>
 					<div style={{
-					width: `${(currentQuestionIndex * 100)/(questionsCount)}%`,
-					height: '100%',
-					background: 'linear-gradient(90deg, var(--gold), var(--gold-light))',
-					borderRadius: '0 2px 2px 0',
-					transition: 'width 0.5s ease',
+						width: `${(currentQuestionIndex * 100) / (questionsCount)}%`,
+						height: '100%',
+						background: 'linear-gradient(90deg, var(--gold), var(--gold-light))',
+						borderRadius: '0 2px 2px 0',
+						transition: 'width 0.5s ease',
 					}} />
 				</div>
 			)}
-		
+
+			{isExamStarted && !ExamFinished && (
+				<div
+					style={{
+						position: 'absolute',
+						top: 10,
+						left: 16,
+						right: 16,
+						display: 'flex',
+						justifyContent: 'flex-start',
+						alignItems: 'center',
+						zIndex: 20,
+						pointerEvents: 'none',
+					}}>
+					<p style={{
+						position: 'absolute',
+						left: '50%',
+						transform: 'translateX(-50%)',
+						color: 'var(--cream)',
+						padding: '5px 10px',
+						borderRadius: '5px',
+						margin: 0,
+					}}>
+						{currentQuestionIndex}/{questionsCount}
+					</p>
+					<div style={{ pointerEvents: 'auto' }}>
+						<ExitButton
+							label="مغادرة الاختبار"
+							icon={<XIcon />}
+							hoverColor="#F87171"
+							hoverBg="rgba(155, 35, 53, 0.12)"
+							borderColor="rgba(120,20,30,0.4)"
+							activeBorderColor="#9B2335"
+							onClick={resetExamState}
+						/>
+					</div>
+				</div>
+			)}
+
 			{/* Background stars */}
 			<div style={{ position: 'absolute', top: 40, right: 60 }}>
 				<IslamicStar size={80} opacity={0.08} />
@@ -141,14 +204,24 @@ function App() {
 				<IslamicStar size={50} opacity={0.05} />
 			</div>
 
-			
 
+			{/* Gold top line */}
 
-				{/* Gold top line */}
-				
-				<div>
-				{ !isExamStarted? (
-						<div style={{
+			<div
+				style={{
+					...(!isExamStarted
+						? {
+							display: 'flex',
+							alignItems: 'center',
+							width: '100%',
+							maxWidth: 450,
+						}
+						: {}
+					),
+				}}
+			>
+				{!isExamStarted ? (
+					<div style={{
 						width: '100%',
 						maxWidth: 520,
 						background: 'var(--card-bg)',
@@ -185,73 +258,54 @@ function App() {
 							setIsExamStarted={setIsExamStarted}
 							fetchRandomAyah={handleFetchRandomAyah}
 						/>
-						</div>
+					</div>
 				)
-				: ExamFinished ? (
-					<div style={{ textAlign: 'center', padding: '40px', direction: 'rtl' }}>
-					<h2 style={{ fontSize: '28px', color: '#10b981', marginBottom: '15px' }}>
-						🎉 ألمعيّ! تم إنهاء الاختبار بنجاح
-					</h2>
-					<p style={{ fontSize: '20px', marginBottom: '20px' }}>
-						نتيجتك هي: <strong style={{ color: '#3b82f6' }}>{score}</strong> من <strong style={{ color: '#3b82f6' }}>{questionsCount}</strong>
-					</p>
-
-					{/* نسبة النجاح المئوية */}
-					<p style={{ fontSize: '18px', color: '#a1a1aa', marginBottom: '30px' }}>
-						النسبة المئوية: {((score / Number(questionsCount)) * 100).toFixed(0)}%
-					</p>
-
-					<button 
-						onClick={() => {
-							setExamFinished(false);
-							setIsExamStarted(false);
-							setCurrentQuestionIndex(0);
-							setScore(0);
-						}}
-						style={{ padding: '12px 30px', fontSize: '18px', borderRadius: '8px', cursor: 'pointer', backgroundColor: '#6b21a8', color: '#fff', border: 'none' }}
-					>
-						اختبار جديد 🔄
-					</button>
-				</div>
-				)
-				:
-				(
-					<SecondPage
-						currentAyah={currentAyah}
-						Loding={Loding}
-						option={option}
-						setOption={setOption}
-						isRecording={isRecording}
-						incrementRetryCounter={incrementRetryCounter}
-						startSpeechRecognition={handleStartSpeechRecognition}
-						stopSpeechRecognition={stopSpeechRecognition}
-						isCorrect={isCorrect}
-						setIsCorrect={setIsCorrect}
-						hasRecorded={hasRecorded} 
-						showAnswerBox={showAnswerBox}
-						setShowAnswerBox={setShowAnswerBox}
-						tafsirBox={tafsirBox}
-						setTafsirBox={setTafsirBox}
-						fetchTafsir={fetchTafsir}
-						isExamStarted={isExamStarted}
-						setIsExamStarted={setIsExamStarted}
-						fetchRandomAyah={handleFetchRandomAyah}
-						loadingTafsir={loadingTafsir}
-						userTranscript={userTranscript}
-						tafsirText={tafsirText}
-						retryCounter={retryCounter}
-						score={score}
-						setScore={setScore}
-						currentQuestionIndex={currentQuestionIndex}
-						setCurrentQuestionIndex={setCurrentQuestionIndex}
-						questionsCount={questionsCount}
-						setExamFinished={setExamFinished}
-						showRecordingButton={showRecordingButton}
-						setShowRecordingButton={setShowRecordingButton}
-					/>
-				)}
+					: ExamFinished ? (
+						<ResultPage
+							score={score}
+							total={questionsCount}
+							onNewTest={resetExamState}
+							onBack={resetExamState}
+							current={currentQuestionIndex}
+						/>
+					)
+						:
+						(
+							<SecondPage
+								currentAyah={currentAyah}
+								Loding={Loding}
+								isRecording={isRecording}
+								setIsRecording={setIsRecording}
+								incrementRetryCounter={incrementRetryCounter}
+								startSpeechRecognition={handleStartSpeechRecognition}
+								stopSpeechRecognition={stopSpeechRecognition}
+								isCorrect={isCorrect}
+								setIsCorrect={setIsCorrect}
+								hasRecorded={hasRecorded}
+								showAnswerBox={showAnswerBox}
+								setShowAnswerBox={setShowAnswerBox}
+								tafsirBox={tafsirBox}
+								setTafsirBox={setTafsirBox}
+								fetchTafsir={fetchTafsir}
+								isExamStarted={isExamStarted}
+								setIsExamStarted={setIsExamStarted}
+								fetchRandomAyah={handleFetchRandomAyah}
+								loadingTafsir={loadingTafsir}
+								userTranscript={userTranscript}
+								tafsirText={tafsirText}
+								retryCounter={retryCounter}
+								score={score}
+								setScore={setScore}
+								currentQuestionIndex={currentQuestionIndex}
+								setCurrentQuestionIndex={setCurrentQuestionIndex}
+								questionsCount={questionsCount}
+								setExamFinished={setExamFinished}
+								showRecordingButton={showRecordingButton}
+								setShowRecordingButton={setShowRecordingButton}
+							/>
+						)}
 			</div>
-	</div>
+		</div>
 	)
 }
 

@@ -82,7 +82,7 @@ function App() {
 
 	const incrementRetryCounter = () => {
 		setRetryCounter(retryCounter + 1);
-		console.log('increment retry function called');
+		// console.log('increment retry function called');
 	};
 
 

@@ -26,7 +26,7 @@ export const startSpeechRecognition = ({
 
 	// on start
 	recognition.onstart = () => {
-		console.log("Speech Recognition started.");
+		// console.log("Speech Recognition started.");
 		setUserTranscript("");
 		setIsCorrect(null);
 		setIsRecording(true);
@@ -37,15 +37,14 @@ export const startSpeechRecognition = ({
 	recognition.onresult = (event) => {
 		const transcriptResultIndex = event.resultIndex;
 		const transcriptResult = event.results[transcriptResultIndex][0].transcript.trim();
-		setShowRecordingButton(false);
 		setUserTranscript(transcriptResult);
 
 
 		const cleanUserTranscript = cleanArabicText(transcriptResult);
 		const cleanOriginalTranscript = cleanArabicText(currentAyah.text);
 
-		console.log("Cleaned User Transcript:", cleanUserTranscript);
-		console.log("Cleaned Original Transcript:", cleanOriginalTranscript);
+		// console.log("Cleaned User Transcript:", cleanUserTranscript);
+		// console.log("Cleaned Original Transcript:", cleanOriginalTranscript);
 
 		const originalWords = cleanOriginalTranscript.split(' ').filter(word => word.trim() !== '');
 		const userWords = cleanUserTranscript.split(' ').filter(word => word.trim() !== '');
@@ -63,15 +62,15 @@ export const startSpeechRecognition = ({
 		});
 		// calculate match percentage to determine if the user passed or failed
 		const matchPercentage = (correctWordsCount / originalWords.length) * 100;
-		console.log(`Match Percentage: ${matchPercentage.toFixed(2)}%`);
+		// console.log(`Match Percentage: ${matchPercentage.toFixed(2)}%`);
 		const threshold = originalWords.length <= 30 ? 10 : 10;
 		if (matchPercentage >= threshold) {
 			setIsCorrect(true);
-			// setFeedback('correct');
+			setShowRecordingButton(false),
 			console.log('You Passed! 🔥');
 		} else {
 			setIsCorrect(false);
-			// setFeedback('wrong');
+			setShowRecordingButton(false),
 			console.log('You Failed! 😢');
 		}
     };
@@ -86,12 +85,12 @@ export const startSpeechRecognition = ({
 
     // on end
 	recognition.onend = () => {
-		console.log("Speech Recognition ended.");
+		// console.log("Speech Recognition ended.");
 		setIsRecording(false);
 		setFinishRecording(true);
 	};
 
 	recognitionRef.current = recognition;
 	recognition.start();
-	console.log("Speech Recognition window API is supported in this browser.");
+	// console.log("Speech Recognition window API is supported in this browser.");
 };

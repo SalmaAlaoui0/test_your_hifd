@@ -313,7 +313,7 @@ export default function SecondPage({
 								onClick={() => {
 									setShowRecordingButton(true);
 									setScore(score + 1);
-									console.log('score is: ', score);
+									// console.log('score is: ', score);
 									if (currentQuestionIndex >= Number(questionsCount)) {
 										setExamFinished(true);
 									} else {
@@ -382,7 +382,7 @@ export default function SecondPage({
 
 					{/* 2. حالة: جواب صحيح */}
 					{userTranscript !== "" && isCorrect === true && (
-						console.log('Correct answer detected!'), // Debugging log
+						// console.log('Correct answer detected!'), // Debugging log
 						<FeedbackPanel 
 							feedback={'correct'}
 							isCorrect={isCorrect}
@@ -401,7 +401,7 @@ export default function SecondPage({
 
 					{/* 3. حالة: جواب خاطئ */}
 					{userTranscript !== "" && isCorrect === false && (
-						console.log('isCorrect is false, feedback is: ', feedback),
+						// console.log('isCorrect is false, feedback is: ', feedback),
 						<FeedbackPanel
 							feedback={'wrong'}
 							isCorrect={isCorrect}

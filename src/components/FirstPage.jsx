@@ -191,6 +191,7 @@ export default function FirstPage({
 
 			<button
 				onClick={() => {
+					console.log('BISMILLAH\n');
 					if (!fromHizb || !toHizb) {
 						showAlert("من فضلك اختر الحزب أولاً");
 						return;

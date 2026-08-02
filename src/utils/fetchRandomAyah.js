@@ -44,8 +44,8 @@ export const fetchRandomAyah = async ({
 			surahName: selected.surah.name,
 			surahNumber: selected.surah.number,
 		});
-		console.log('selected surah number is: ', selected.surah.number);
-		console.log('selected surah name is: ', selected.surah.name);
+		// console.log('selected surah number is: ', selected.surah.number);
+		// console.log('selected surah name is: ', selected.surah.name);
 		// console.log('selected Ayah number is: ', selected.numberInSurah);
 		// console.log('selected Surah Name is: ', selected.surah.name);
 	} catch (error) {

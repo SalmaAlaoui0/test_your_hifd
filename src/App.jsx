@@ -92,11 +92,18 @@ function App() {
 		setLoadingTafsir(true);
 		setTafsirBox(true);
 		try {
-			const response = await fetch(`https://api.quran-tafseer.com/tafseer/1/${currentAyah.surahNumber}/${currentAyah.numberInSurah}/`)
+			const response = await fetch(
+				`https://api.alquran.cloud/v1/ayah/${currentAyah.surahNumber}:${currentAyah.numberInSurah}/ar.muyassar`
+			);
 			const data = await response.json();
-			setTafsirText(data.text);
+			if (data.code === 200 && data.data) {
+				setTafsirText(data.data.text);
+			} else {
+				setTafsirText("تعذر جلب التفسير حالياً.");
+			}
 		} catch (error) {
 			console.error('Error fetching tafsir:', error);
+			setTafsirText("حدث خطأ أثناء تحميل التفسير.");
 		}
 		setLoadingTafsir(false);
 	};

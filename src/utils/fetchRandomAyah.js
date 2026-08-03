@@ -38,16 +38,24 @@ export const fetchRandomAyah = async ({
 		const randomIndex = Math.floor(Math.random() * hizbAyahs.length);
 		const selected = hizbAyahs[randomIndex];
 
-		setCurrentAyah({
-			text: selected.text,
-			numberInSurah: selected.numberInSurah,
-			surahName: selected.surah.name,
-			surahNumber: selected.surah.number,
-		});
-		// console.log('selected surah number is: ', selected.surah.number);
-		// console.log('selected surah name is: ', selected.surah.name);
-		// console.log('selected Ayah number is: ', selected.numberInSurah);
-		// console.log('selected Surah Name is: ', selected.surah.name);
+		const cleanResponse = await fetch(
+			`https://api.alquran.cloud/v1/ayah/${selected.surah.number}:${selected.numberInSurah}/editions/quran-warsh,quran-simple-clean`
+		);
+		const cleanData = await cleanResponse.json();
+
+		const warshText = cleanData.data[0].text;
+		const cleanText = cleanData.data[1].text;
+
+        // Store both versions in currentAyah state object
+        setCurrentAyah({
+            text: warshText,
+            cleanText: cleanText,
+            numberInSurah: selected.numberInSurah,
+            surahName: selected.surah.name,
+            surahNumber: selected.surah.number,
+        });
+		// console.log('the clean text is: ', cleanText);
+		// console.log('and wash with tashkeel text is: ', warshText);
 	} catch (error) {
 	console.error('error fetching the random Ayah: ', error)
 	}

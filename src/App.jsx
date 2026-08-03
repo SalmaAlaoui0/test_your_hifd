@@ -92,7 +92,7 @@ function App() {
 		setLoadingTafsir(true);
 		setTafsirBox(true);
 		try {
-			const response = await fetch(`http://api.quran-tafseer.com/tafseer/1/${currentAyah.surahNumber}/${currentAyah.numberInSurah}/`)
+			const response = await fetch(`https://api.quran-tafseer.com/tafseer/1/${currentAyah.surahNumber}/${currentAyah.numberInSurah}/`)
 			const data = await response.json();
 			setTafsirText(data.text);
 		} catch (error) {

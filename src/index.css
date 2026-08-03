@@ -3,10 +3,11 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
+  --bg: #FBF7EE;
   --card-bg: rgba(10, 36, 22, 0.92);
-  --code-bg: #f4f3ec;
+  --code-bg: #EEE8DA;
+  --border: #E4DCCB;
+  
   --accent: #aa3bff;
   --gold: #C8963E;
   --gold-light: #E8C87A;

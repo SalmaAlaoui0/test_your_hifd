@@ -212,7 +212,7 @@ export default function SecondPage({
 					<div
 						className="fade-in"
 						style={{
-							background: 'rgba(29, 78, 122, 0.5)',
+							background: 'rgba(18, 52, 82, 0.5)',
 							border: '1px solid rgba(43,108,176,0.4)',
 							borderRadius: 12,
 							padding: '16px 24px',
@@ -285,8 +285,8 @@ export default function SecondPage({
 							lineHeight: 1.8,
 							textAlign: 'center',
 						}}>
-						<p style={{ color: '#10b981', fontSize: '14px', marginBottom: '8px' }}>: الجواب الكامل للآية</p>
-						<p style={{ fontSize: '18px', direction: 'rtl', lineHeight: '1.6' }}>
+						<p style={{ color: '#10b981', fontSize: '14px', marginBottom: '15px' }}>: الجواب الكامل للآية</p>
+						<p style={{ color: '#fff', fontSize: '18px', direction: 'rtl', lineHeight: '1.6' }}>
 							" {currentAyah.text} "
 						</p>
 					</div>

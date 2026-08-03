@@ -5,7 +5,7 @@ import { PlayIcon } from '../utils/Icons.jsx';
 import { ActionButton } from '../utils/Button.jsx';
 import { HelpCircleIcon } from '../utils/Icons.jsx';
 import { EyeIcon } from '../utils/Icons.jsx';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CounterBtn } from './FirstPage.jsx';
 import FeedbackPanel from './FeedbackPanel.jsx';
 
@@ -17,19 +17,33 @@ const StarIcon = () => (
 
 function MicButton({ isRecording, incrementRetryCounter, stopSpeechRecognition, startSpeechRecognition }) {
 	const [hov, setHov] = useState(false)
+	const [isSmallScreen, setIsSmallScreen] = useState(() => {
+		if (typeof window === 'undefined') {
+			return false;
+		}
+		return window.innerWidth <= 768;
+	});
+
+	useEffect(() => {
+		const onResize = () => setIsSmallScreen(window.innerWidth <= 768);
+		onResize();
+		window.addEventListener('resize', onResize);
+		return () => window.removeEventListener('resize', onResize);
+	}, []);
+
 	return (
 		<button
 			onClick={() => { incrementRetryCounter(); isRecording ? stopSpeechRecognition() : startSpeechRecognition(); }}
 			onMouseEnter={() => setHov(true)}
 			onMouseLeave={() => setHov(false)}
 			style={{
-				width: 100,
+				width: isSmallScreen ? 84 : 100,
 				flexShrink: 0,
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'center',
 				justifyContent: 'center',
-				gap: 10,
+				gap: isSmallScreen ? 8 : 10,
 				background: isRecording
 					? 'rgba(155, 35, 53, 0.2)'
 					: hov
@@ -47,7 +61,7 @@ function MicButton({ isRecording, incrementRetryCounter, stopSpeechRecognition, 
 						: 'none',
 				position: 'relative',
 				backdropFilter: 'blur(10px)',
-				padding: '20px 0',
+				padding: isSmallScreen ? '14px 0' : '20px 0',
 			}}
 		>
 			{isRecording && (
@@ -62,7 +76,7 @@ function MicButton({ isRecording, incrementRetryCounter, stopSpeechRecognition, 
 			)}
 			<MicIcon active={isRecording} />
 			<span style={{
-				fontSize: 11,
+				fontSize: isSmallScreen ? 10 : 11,
 				fontFamily: 'Noto Naskh Arabic, serif',
 				fontWeight: 600,
 				textAlign: 'center',
@@ -109,6 +123,20 @@ export default function SecondPage({
 	setShowRecordingButton
 }) {
 	const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong' | 'no-audio'
+	const [isSmallScreen, setIsSmallScreen] = useState(() => {
+		if (typeof window === 'undefined') {
+			return false;
+		}
+		return window.innerWidth <= 768;
+	});
+
+	useEffect(() => {
+		const onResize = () => setIsSmallScreen(window.innerWidth <= 768);
+		onResize();
+		window.addEventListener('resize', onResize);
+		return () => window.removeEventListener('resize', onResize);
+	}, []);
+
 	const shouldRevealFullAyahInCard = !isRecording && userTranscript !== "" && isCorrect !== null;
 	const ayahPreviewText = currentAyah
 		? shouldRevealFullAyahInCard
@@ -117,7 +145,7 @@ export default function SecondPage({
 		: "";
 	return (
 		<div style={{ width: '100%', maxWidth: 680, display: 'flex', flexDirection: 'column', gap: '20px' }}>
-			<div style={{ display: 'grid', direction: 'rtl', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: 16, alignItems: 'stretch' }}>
+			<div style={{ display: 'grid', direction: 'rtl', gridTemplateColumns: isSmallScreen ? 'minmax(0, 1fr) 84px' : 'minmax(0, 1fr) auto', gap: isSmallScreen ? 10 : 16, alignItems: 'stretch' }}>
 				<div
 					style={{
 						background: 'var(--card-bg)',
@@ -127,7 +155,7 @@ export default function SecondPage({
 								: '1px solid rgba(248,113,113,0.45)'
 							: '1px solid var(--card-border)',
 						borderRadius: 16,
-						padding: '28px 32px',
+						padding: isSmallScreen ? '18px 14px' : '28px 32px',
 						boxShadow: shouldRevealFullAyahInCard
 							? isCorrect
 								? '0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(52,211,153,0.16) inset'
@@ -142,7 +170,7 @@ export default function SecondPage({
 						<GeoCorner />
 					</div>
 					{Loding ? (
-						<p style={{ marginLeft: '180px' }}>جاري جلب الآية...</p>
+						<p style={{ marginLeft: isSmallScreen ? '0' : '180px' }}>جاري جلب الآية...</p>
 					) : currentAyah ? (
 						<>
 							<div style={{ position: 'absolute', top: 0, left: '20%', right: '20%', height: 1, background: 'linear-gradient(90deg, transparent, rgba(200,150,62,0.5), transparent)' }} />
@@ -170,14 +198,15 @@ export default function SecondPage({
 								direction: 'rtl',
 								textAlign: 'right',
 								transition: 'all 0.4s ease',
-								marginLeft: '180px'
+								marginLeft: isSmallScreen ? '0' : '180px',
+								// sm-marginLeft: '10px'
 								// filter: showAnswer ? 'none' : 'blur(0)',
 							}}>
 								"{ayahPreviewText}"
 							</p>
 						</>
 					) : (
-						<p style={{ marginLeft: '180px' }}>اضغط على لا أعلم لتوليد آية</p>
+						<p style={{ marginLeft: isSmallScreen ? '0' : '180px' }}>اضغط على لا أعلم لتوليد آية</p>
 					)}
 				</div>
 

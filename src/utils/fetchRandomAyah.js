@@ -1,3 +1,5 @@
+const TEST_ONLY_AYAH = false;
+
 export const fetchRandomAyah = async ({
 	setCurrentQuestionIndex,
 	currentQuestionIndex,
@@ -19,13 +21,33 @@ export const fetchRandomAyah = async ({
 	setShowAnswerBox(false);
 	try {
 		setCurrentQuestionIndex(currentQuestionIndex + 1);
+
+		if (TEST_ONLY_AYAH) {// to test very long ayah (2:102) and its tafsir, you can set TEST_ONLY_AYAH to true
+			const fixedResponse = await fetch(
+				'https://api.alquran.cloud/v1/ayah/2:102/editions/quran-warsh,quran-simple-clean'
+			);
+			const fixedData = await fixedResponse.json();
+			const warshText = fixedData.data[0].text;
+			const cleanText = fixedData.data[1].text;
+
+			setCurrentAyah({
+				text: warshText,
+				cleanText: cleanText,
+				numberInSurah: 102,
+				surahName: 'سُورَةُ البَقَرَةِ',
+				surahNumber: 2,
+			});
+			setLoding(false);
+			return;
+		}
+
 		const minHizb = parseInt(fromHizb);
 		const maxHizb = parseInt(toHizb);
 		const randomHizb = Math.floor(Math.random() * (maxHizb - minHizb + 1)) + minHizb;
 
 		console.log('Random Hizb:', randomHizb);
 		const juzNumber = Math.ceil(randomHizb / 2);
-		
+
 		const response = await fetch(`https://api.alquran.cloud/v1/juz/${juzNumber}/ar.warsh`);
 		const data = await response.json();
 		// console.log('Fetched data:', data);
@@ -36,7 +58,7 @@ export const fetchRandomAyah = async ({
 		// console.log('Fetched Ayahs for Hizb:', hizbAyahs);
 
 		const randomIndex = Math.floor(Math.random() * hizbAyahs.length);
-		const selected = hizbAyahs[randomIndex];
+		const selected = hizbAyahs[randomIndex]; 
 
 		const cleanResponse = await fetch(
 			`https://api.alquran.cloud/v1/ayah/${selected.surah.number}:${selected.numberInSurah}/editions/quran-warsh,quran-simple-clean`

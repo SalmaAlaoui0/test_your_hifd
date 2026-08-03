@@ -109,18 +109,33 @@ export default function SecondPage({
 	setShowRecordingButton
 }) {
 	const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong' | 'no-audio'
+	const shouldRevealFullAyahInCard = !isRecording && userTranscript !== "" && isCorrect !== null;
+	const ayahPreviewText = currentAyah
+		? shouldRevealFullAyahInCard
+			? currentAyah.text
+			: `${currentAyah.text.split(' ').slice(0, 4).join(' ')} ...`
+		: "";
 	return (
 		<div style={{ width: '100%', maxWidth: 680, display: 'flex', flexDirection: 'column', gap: '20px' }}>
 			<div style={{ display: 'grid', direction: 'rtl', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: 16, alignItems: 'stretch' }}>
 				<div
 					style={{
 						background: 'var(--card-bg)',
-						border: '1px solid var(--card-border)',
+						border: shouldRevealFullAyahInCard
+							? isCorrect
+								? '1px solid rgba(52,211,153,0.45)'
+								: '1px solid rgba(248,113,113,0.45)'
+							: '1px solid var(--card-border)',
 						borderRadius: 16,
 						padding: '28px 32px',
-						boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+						boxShadow: shouldRevealFullAyahInCard
+							? isCorrect
+								? '0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(52,211,153,0.16) inset'
+								: '0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(248,113,113,0.14) inset'
+							: '0 16px 48px rgba(0,0,0,0.4)',
 						position: 'relative',
 						backdropFilter: 'blur(10px)',
+						transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
 					}}
 				>
 					<div style={{ position: 'absolute', top: -1, right: -1 }}>
@@ -150,6 +165,7 @@ export default function SecondPage({
 								fontSize: 'clamp(18px, 2.8vw, 24px)',
 								lineHeight: 2,
 								color: 'var(--cream)',
+								opacity: shouldRevealFullAyahInCard ? 0.62 : 1,
 								margin: 0,
 								direction: 'rtl',
 								textAlign: 'right',
@@ -157,7 +173,7 @@ export default function SecondPage({
 								marginLeft: '180px'
 								// filter: showAnswer ? 'none' : 'blur(0)',
 							}}>
-								"{currentAyah.text.split(' ').slice(0, 4).join(' ')} ..."
+								"{ayahPreviewText}"
 							</p>
 						</>
 					) : (

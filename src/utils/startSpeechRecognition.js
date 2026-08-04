@@ -170,7 +170,7 @@ export const startSpeechRecognition = ({
       recognition.stop();
     } else {
       setIsCorrect(false);
-      // ⚠️ Removed setShowRecordingButton(false) from here so UI doesn't disappear mid-recitation
+      // Removed setShowRecordingButton(false) from here so UI doesn't disappear mid-recitation
     }
   };
 
@@ -182,7 +182,7 @@ export const startSpeechRecognition = ({
   recognition.onend = () => {
     setIsRecording(false);
     setFinishRecording(true);
-    setShowRecordingButton(false); // 🌟 Hide recording controls ONLY when recording actually finishes
+    setShowRecordingButton(false);
   };
 
   recognitionRef.current = recognition;

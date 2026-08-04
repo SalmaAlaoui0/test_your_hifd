@@ -3,7 +3,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #FBF7EE;
+  --bg: #FBF7EE; /* d3bd8b */
   --card-bg: rgba(10, 36, 22, 0.92);
   --code-bg: #EEE8DA;
   --border: #E4DCCB;

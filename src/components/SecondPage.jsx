@@ -145,7 +145,7 @@ export default function SecondPage({
 		: "";
 	return (
 		<div style={{ width: '100%', maxWidth: 680, display: 'flex', flexDirection: 'column', gap: '20px' }}>
-			<div style={{ display: 'grid', direction: 'rtl', gridTemplateColumns: isSmallScreen ? 'minmax(0, 1fr) 84px' : 'minmax(0, 1fr) auto', gap: isSmallScreen ? 10 : 16, alignItems: 'stretch' }}>
+			<div style={{ display: 'grid', direction: 'rtl', gridTemplateColumns: isSmallScreen ? 'minmax(0, 1fr) auto' : 'minmax(0, 1fr) auto', gap: isSmallScreen ? 10 : 16, alignItems: 'stretch' }}>
 				<div
 					style={{
 						background: 'var(--card-bg)',
@@ -198,7 +198,7 @@ export default function SecondPage({
 								direction: 'rtl',
 								textAlign: 'right',
 								transition: 'all 0.4s ease',
-								marginLeft: isSmallScreen ? '0' : '180px',
+								marginLeft: isSmallScreen ? '40' : '180px',
 								// sm-marginLeft: '10px'
 								// filter: showAnswer ? 'none' : 'blur(0)',
 							}}>

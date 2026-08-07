@@ -2,12 +2,26 @@ import { react } from 'react';
 import { BookOpenIcon } from '../utils/Icons.jsx';
 import { StarIcon } from '../utils/Icons.jsx';
 import { PlayIcon } from '../utils/Icons.jsx';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { showAlert } from '../utils/alert';
 
 
 function SelectField({ value, onChange, options, placeholder }) {
 	const [focused, setFocused] = useState(false)
+	const [isSmallScreen, setIsSmallScreen] = useState(() => {
+		if (typeof window === 'undefined') {
+			return false;
+		}
+		return window.innerWidth <= 768;
+	});
+
+	useEffect(() => {
+		const onResize = () => setIsSmallScreen(window.innerWidth <= 768);
+		onResize();
+		window.addEventListener('resize', onResize);
+		return () => window.removeEventListener('resize', onResize);
+	}, []);
+
 	return (
 		<select
 			value={value}
@@ -21,7 +35,7 @@ function SelectField({ value, onChange, options, placeholder }) {
 				border: `1px solid ${focused ? 'var(--gold)' : 'rgba(180,140,50,0.25)'}`,
 				borderRadius: 10,
 				color: value ? 'var(--cream)' : 'rgba(245,230,200,0.4)',
-				fontSize: 14,
+				fontSize: isSmallScreen ? 12 : 14,
 				fontFamily: 'Noto Naskh Arabic, serif',
 				cursor: 'pointer',
 				transition: 'border-color 0.25s ease, box-shadow 0.25s ease',

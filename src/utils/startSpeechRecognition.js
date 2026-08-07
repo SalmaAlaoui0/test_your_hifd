@@ -149,6 +149,10 @@ export const startSpeechRecognition = ({
     const originalWords = cleanOriginalTranscript.split(' ').filter(w => w.trim() !== '');
     const userWords = cleanUserTranscript.split(' ').filter(w => w.trim() !== '');
 
+	console.log("User Cleaned: ", cleanUserTranscript);
+	console.log("Original Cleaned: ", cleanOriginalTranscript);
+	console.log("Original Original🔥: ", currentAyah.text);
+
     if (userWords.length === 0 || originalWords.length === 0) {
       setIsCorrect(null);
       return;

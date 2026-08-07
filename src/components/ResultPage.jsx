@@ -31,7 +31,7 @@ export default function ResultsPage({
 			width: '100%',
 			maxWidth: 340,
 			margin: 'auto',
-			padding: '0 24px',
+			padding: '0 5px',
 			display: 'flex',
 			flexDirection: 'column',
 			alignItems: 'center',

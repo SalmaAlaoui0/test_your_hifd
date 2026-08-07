@@ -199,7 +199,7 @@ export default function ResultsPage({
 					border: `1px solid ${perfect ? 'rgba(34,197,94,0.3)' : pct >= 60 ? 'rgba(200,150,62,0.3)' : 'rgba(248,113,113,0.3)'}`,
 					borderRadius: 20,
 					padding: '4px 16px',
-					marginBottom: 28,
+					marginBottom: 20,
 				}}>
 					{grade}
 				</div>
@@ -209,7 +209,7 @@ export default function ResultsPage({
 					display: 'flex',
 					justifyContent: 'center',
 					gap: 0,
-					marginBottom: 32,
+					marginBottom: 30,
 				}}>
 					{[
 						{ label: 'إجمالي الأسئلة', value: total, color: 'var(--cream)' },
@@ -220,15 +220,15 @@ export default function ResultsPage({
 							key={label}
 							style={{
 								flex: 1,
-								padding: '16px 8px',
+								padding: '10px 8px',
 								borderRight: i < 2 ? '1px solid rgba(180,140,50,0.15)' : 'none',
 								textAlign: 'center',
 							}}
 						>
 							<div style={{
 								fontFamily: 'Amiri, serif',
-								fontSize: 28,
-								fontWeight: 700,
+								fontSize: 24,
+								fontWeight: 600,
 								color,
 								lineHeight: 1,
 								marginBottom: 6,

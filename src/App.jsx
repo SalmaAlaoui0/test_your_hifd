@@ -11,10 +11,10 @@ import { MoonIcon, SunIcon, XIcon } from './utils/Icons.jsx';
 import './App.css'
 
 const getInitialTheme = () => {
-	if (typeof window === 'undefined') return 'light';
+	if (typeof window === 'undefined') return 'dark';
 	const storedTheme = window.localStorage.getItem('theme');
 	if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme;
-	return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+	return 'dark';
 };
 
 function App() {

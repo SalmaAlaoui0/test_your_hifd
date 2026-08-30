@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { startSpeechRecognition } from './utils/startSpeechRecognition';
 import { fetchRandomAyah } from './utils/fetchRandomAyah';
 import FirstPage from './components/FirstPage';
@@ -7,12 +7,20 @@ import ResultPage from './components/ResultPage';
 import { IslamicStar } from './utils/Icons.jsx';
 import { GeoCorner } from './utils/Icons.jsx';
 import { ExitButton } from './utils/Button.jsx';
-import { XIcon } from './utils/Icons.jsx';
+import { MoonIcon, SunIcon, XIcon } from './utils/Icons.jsx';
 import './App.css'
+
+const getInitialTheme = () => {
+	if (typeof window === 'undefined') return 'light';
+	const storedTheme = window.localStorage.getItem('theme');
+	if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme;
+	return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
 
 function App() {
 
 	const recognitionRef = useRef(null);
+	const [theme, setTheme] = useState(getInitialTheme);
 
 	// const [count, setCount] = useState(0)
 	const [fromHizb, setFromHizb] = useState('');
@@ -41,6 +49,16 @@ function App() {
 	const [userTranscript, setUserTranscript] = useState("");
 	const [isCorrect, setIsCorrect] = useState(null);
 	const [isRecording, setIsRecording] = useState(false);
+
+	useEffect(() => {
+		document.documentElement.dataset.theme = theme;
+		document.documentElement.style.colorScheme = theme;
+		window.localStorage.setItem('theme', theme);
+	}, [theme]);
+
+	const toggleTheme = () => {
+		setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+	};
 
 
 	const handleStartSpeechRecognition = () => {
@@ -144,6 +162,32 @@ function App() {
 				overflow: 'hidden',
 			}}
 		>
+			<button
+				type="button"
+				onClick={toggleTheme}
+				aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+				style={{
+					position: 'absolute',
+					top: 50,
+					right: 70,
+					zIndex: 30,
+					display: 'inline-flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: 44,
+					height: 44,
+					borderRadius: 14,
+					border: '1px solid rgba(200,150,62,0.35)',
+					background: theme === 'dark' ? 'rgba(10, 36, 22, 0.85)' : 'rgba(255, 248, 232, 0.9)',
+					color: 'var(--gold)',
+					cursor: 'pointer',
+					boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+					transition: 'transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
+				}}
+			>
+				{theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+			</button>
+
 			{isExamStarted && !ExamFinished && (
 				<div style={{
 					position: 'absolute',

@@ -2,6 +2,8 @@ import { react } from 'react';
 import { BookOpenIcon } from '../utils/Icons.jsx';
 import { StarIcon } from '../utils/Icons.jsx';
 import { PlayIcon } from '../utils/Icons.jsx';
+import { SunIcon } from '../utils/Icons.jsx';
+import { MoonIcon } from '../utils/Icons.jsx';
 import { useState, useEffect } from 'react'
 import { showAlert } from '../utils/alert';
 
@@ -93,7 +95,7 @@ export default function FirstPage({
 	setCount,
 	isExamStarted,
 	setIsExamStarted,
-	fetchRandomAyah
+	fetchRandomAyah,
 }) {
 	const [hovering, setHovering] = useState(false)
 	return (
